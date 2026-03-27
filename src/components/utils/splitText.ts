@@ -14,7 +14,6 @@ export default function setSplitText() {
   const TriggerStart = window.innerWidth <= 1024 ? "top 60%" : "20% 60%";
   const ToggleAction = "play pause resume reverse";
 
-  // PARA animation
   paras.forEach((para) => {
     gsap.fromTo(
       para,
@@ -33,7 +32,6 @@ export default function setSplitText() {
     );
   });
 
-  // TITLE animation
   titles.forEach((title) => {
     gsap.fromTo(
       title,

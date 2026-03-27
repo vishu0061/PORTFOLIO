@@ -1,14 +1,19 @@
 import * as THREE from "three";
-import gsap from "gsap";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export function setCharTimeline(
   character: THREE.Object3D<THREE.Object3DEventMap> | null,
   camera: THREE.PerspectiveCamera
 ) {
   let intensity: number = 0;
+
   setInterval(() => {
     intensity = Math.random();
   }, 200);
+
   const tl1 = gsap.timeline({
     scrollTrigger: {
       trigger: ".landing-section",
@@ -18,6 +23,7 @@ export function setCharTimeline(
       invalidateOnRefresh: true,
     },
   });
+
   const tl2 = gsap.timeline({
     scrollTrigger: {
       trigger: ".about-section",
@@ -27,6 +33,7 @@ export function setCharTimeline(
       invalidateOnRefresh: true,
     },
   });
+
   const tl3 = gsap.timeline({
     scrollTrigger: {
       trigger: ".whatIDO",
@@ -36,31 +43,39 @@ export function setCharTimeline(
       invalidateOnRefresh: true,
     },
   });
+
   let screenLight: any, monitor: any;
+
   character?.children.forEach((object: any) => {
     if (object.name === "Plane004") {
       object.children.forEach((child: any) => {
         child.material.transparent = true;
         child.material.opacity = 0;
+
         if (child.material.name === "Material.018") {
           monitor = child;
           child.material.color.set("#FFFFFF");
         }
       });
     }
+
     if (object.name === "screenlight") {
       object.material.transparent = true;
       object.material.opacity = 0;
       object.material.emissive.set("#B0F5EA");
+
       gsap.timeline({ repeat: -1, repeatRefresh: true }).to(object.material, {
         emissiveIntensity: () => intensity * 8,
         duration: () => Math.random() * 0.6,
         delay: () => Math.random() * 0.1,
       });
+
       screenLight = object;
     }
   });
-  let neckBone = character?.getObjectByName("spine005");
+
+  const neckBone = character?.getObjectByName("spine005");
+
   if (window.innerWidth > 1024) {
     if (character) {
       tl1
@@ -127,7 +142,8 @@ export function setCharTimeline(
           end: "bottom top",
         },
       });
-      tM2.to(".what-box-in", { display: "flex", duration: 0.1, delay: 0 }, 0);
+
+      tM2.to(".what-box-in", { display: "flex", duration: 0.1 }, 0);
     }
   }
 }
@@ -142,6 +158,7 @@ export function setAllTimeline() {
       invalidateOnRefresh: true,
     },
   });
+
   careerTimeline
     .fromTo(
       ".career-timeline",
@@ -149,7 +166,6 @@ export function setAllTimeline() {
       { maxHeight: "100%", duration: 0.5 },
       0
     )
-
     .fromTo(
       ".career-timeline",
       { opacity: 0 },
