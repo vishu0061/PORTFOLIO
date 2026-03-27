@@ -14,30 +14,35 @@ export const smoother = {
       el.scrollIntoView({ behavior: "smooth" });
     }
   },
-  paused: () => {},
+  paused: (_state?: boolean) => {},
 };
 
 const Navbar = () => {
   useEffect(() => {
-    let links = document.querySelectorAll(".header ul a");
-
-    links.forEach((elem) => {
-      let element = elem as HTMLAnchorElement;
-
-      element.addEventListener("click", (e) => {
+    const links = Array.from(document.querySelectorAll(".header ul a"));
+    const handlers = links.map((elem) => {
+      const element = elem as HTMLAnchorElement;
+      const handler = (e: Event) => {
         if (window.innerWidth > 1024) {
           e.preventDefault();
-          let elem = e.currentTarget as HTMLAnchorElement;
-          let section = elem.getAttribute("data-href");
-
+          const target = e.currentTarget as HTMLAnchorElement;
+          const section = target.getAttribute("data-href");
           if (section) {
             smoother.scrollTo(section);
           }
         }
-      });
+      };
+      element.addEventListener("click", handler);
+      return { element, handler };
     });
 
     ScrollTrigger.refresh();
+
+    return () => {
+      handlers.forEach(({ element, handler }) => {
+        element.removeEventListener("click", handler);
+      });
+    };
   }, []);
 
   return (
